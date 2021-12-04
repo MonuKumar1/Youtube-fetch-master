@@ -6,7 +6,7 @@ from os import environ
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-# import time
+import time
 import asyncio
 
 YOUTUBE_API_URL = environ.get('YOUTUBE_API_URL')
@@ -36,9 +36,7 @@ def search(tag):
     return jsonify(Data)   
 
 
-
 async def video_data():
-    
     page_token = ""
     # k=5  
     while True:
@@ -64,7 +62,7 @@ async def video_data():
                 page_token = json_response['nextPageToken']
             else:
                 page_token = ''
-                k=1    
+                # k=1    
             for i in json_response.get("items", []):
                 video_id = i.get("id", {}).get("videoId")
                 snippet_data = i.get("snippet", {})
@@ -93,20 +91,17 @@ async def video_data():
 
            
             for d in DATA_LIST:
+                time.sleep(2)
                 if db.find_one({"_id":d["_id"]}):
                     print('duplicate data')
                 else:
                     r=db.insert_one(d)
                     print("Youtube data saved to database!!")
                     print(r.inserted_id)
-        # time.sleep(100)  
-        asyncio.sleep(60)                  
-    return DATA_LIST
+        time.sleep(10)  
           
 
 async def start():
     loop = asyncio.get_event_loop()
-    loop.run_forever(await video_data())
     print('loop started')
-    return loop
-    
+    loop.run_forever(await video_data())
