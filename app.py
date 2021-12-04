@@ -1,11 +1,11 @@
 from logging import exception
-from flask import Flask, jsonify
+from flask import Flask
 
 from os import environ
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-from user.task import query, search, video_data, start
+from user.task import query, search, start
 import asyncio
 
 
@@ -37,20 +37,7 @@ def search_DB(tag=''):
     data = search(tag)
     return data    
 
-LOOP = ''
-
-@app.route("/scrap/start")
-def start_S():
-    loop = asyncio.run(start())
-    LOOP = loop
-    return "getting videos data"
-
-
-@app.route("/scrap/stop")
-def stop_S():
-    try:
-        LOOP.stop()
-        
-    except:
-        return "stop failed"            
-    return "stopping scrapping"
+@app.route("/start")
+def strt():
+    asyncio.run(start())
+    return "S"
